@@ -4,11 +4,11 @@
 	Output:	.string "The damage:\n"
 .text
 main:
-	li a1,1#a1=1
-	li a2,-1#a2=-1
-	li a3,5#a3=5
-	li t3,21#t3=21
-	li t4,11#t4=11
+	li a1, 1	# a1=1
+	li a2, -1	# a2=-1
+	li a3, 5	# a3=5
+	li t3, 21	# t3=21
+	li t4, 11	# t4=11
 	la a0, Input
 	li a7, 4  
 	ecall 
@@ -26,12 +26,12 @@ end:
 	li a7, 10 #exit 
 	ecall
 start:
-	bge a0,t3,loop1		#t1>=21 jump to loop1
-	bge  a0, t4, loop2 		# 10<t1<=20 jump to loop2
-	bgt  a0, a1, loop3		# 1<t1<=10 jump to loop3
-	beq  a0, a1, xequal5		# t1=1 jump to xequal0
+	bge a0,t3,loop1		# t1>=21 jump to loop1
+	bge  a0, t4, loop2 	# 10<t1<=20 jump to loop2
+	bgt  a0, a1, loop3	# 1<t1<=10 jump to loop3
+	beq  a0, a1, xequal5	# t1=1 jump to xequal0
 	beq  a0, zero, xequal0	# t1=0 jump to xequal5
-	blt  a0, a2, otherwise	#-1 jump to otherwise
+	blt  a0, a2, otherwise	# -1 jump to otherwise
 loop1:	# t1>=21
 	addi  sp, sp, -8		
 	sw  a0, 4(sp)
