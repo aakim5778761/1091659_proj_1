@@ -1,31 +1,81 @@
 .globl	main
 .data 	
-    LC0:	.string "lli\n"
-    LC1:	.string "lli"	
-    LC2:	.string "lli "
-    LC3:	.string "\n"
-    Input:	.string "Input the number:\n"
-    Output:	.string "output:\n"
-    Num: 	.word 3 	
+	Input:	.string "Input a number:\n"	
+	Output:	.string "The damage:\n"
 .text
 main:
-    addi x2,x2,-32
-    sw	x1,24(x2)
-    sw	x8,16(x2)
-    addi x8,x2,32
-    #begin  
-    add x11, x8, zero#input a number of floor
-    lui x15,%hi(LC1)
-    addi x10,x15,%lo(LC1)
-    la x10, Input
-    li a7, 4    #print the input
-    ecall
-    li a7, 5    #read the input
-    ecall
-    #end
+	li a1,1#a1=1
+	li a2,-1#a2=-1
+	li a3,5#a3=5
+	li t3,21#t3=21
+	li t4,11#t4=11
+	la a0, Input
+	li a7, 4  
+	ecall 
+	li a7,5
+	ecall
+	jal ra,start
+	beq zero,zero,end
 end:
-    li	x15,0
-    mv	x10,x15
-    lw	x1,24(x2)
-    lw	x8,16(x2)
-    addi x2,x2,32
+	la a0, Output
+	li a7, 4
+	ecall
+	mv a0, t0 
+	li a7, 1
+	ecall 
+	li a7, 10 #exit 
+	ecall
+start:
+	bge a0,t3,loop1		#t1>=21 jump to loop1
+	bge  a0, t4, loop2 		# 10<t1<=20 jump to loop2
+	bgt  a0, a1, loop3		# 1<t1<=10 jump to loop3
+	beq  a0, a1, xequal5		# t1=1 jump to xequal0
+	beq  a0, zero, xequal0	# t1=0 jump to xequal5
+	blt  a0, a2, otherwise	#-1 jump to otherwise
+loop1:	# t1>=21
+	addi  sp, sp, -8		
+	sw  a0, 4(sp)
+	sw  ra, 0(sp)
+	div  a0, a0, a3
+	jal ra, start
+	lw  a0, 4(sp)
+	lw  ra, 0(sp)
+	mul  a0, a0, s0
+	add  t0, t0, a0
+	addi  sp, sp, 8
+	jalr  zero, 0(ra)
+loop2:	# 10<t1<=20
+	addi  sp, sp, -8		
+	sw  a0, 4(sp)
+	sw  ra, 0(sp)
+	addi  a0, a0, -2	# f(x - 2)
+	jal  ra, start
+	lw  a0, 4(sp)
+	addi  a0, a0, -3	# f(x - 3)
+	jal  ra, start
+	lw  a0, 4(sp)
+	lw  ra, 0(sp)
+	addi  sp, sp, 8
+	jalr  zero, 0(ra)
+loop3:	# 1<t1<=10
+	addi sp, sp, -8 
+	sw a0, 4(sp)         
+	sw ra, 0(sp)
+	addi a0, a0, -1         
+	jal ra, start	# f(x - 1)
+	lw a0, 4(sp)              
+	addi a0, a0, -2	# f(x-2) 
+	jal ra, start                 
+	lw a0, 4(sp)
+	lw ra, 0(sp)   
+	addi sp, sp, 8        
+	jalr zero, 0(ra)
+xequal0:
+	addi t0,t0,1
+	jalr zero,0(ra)
+xequal5:
+	addi t0,t0,5
+	jalr zero,0(ra)
+otherwise:
+	addi t0,t0,-1
+	jalr zero,0(ra)
